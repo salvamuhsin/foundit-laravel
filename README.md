@@ -1,66 +1,124 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FoundIt
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A lost and found web app built with Laravel. People post items they have lost or found, owners verify claims with a question only the real owner can answer, and both sides arrange a meetup to return the item.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**For members**
+- Register, log in and manage a personal account
+- Post lost or found items with category, location, date, photo and a verification question
+- Browse and search all items, with filters for type, category and status, and sorting by newest or oldest
+- Claim an item by answering the owner's verification question
+- Owners approve or decline claims (with a reason when declining)
+- Propose and arrange a meetup after a claim is approved
+- Private messages between the owner and the claimant, per item
+- Item status tracking: **Open**, **Claim pending**, **Meetup arranged**, **Returned**
+- Contact form
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**For admins**
+- Admin dashboard and item management
+- Restrict or unrestrict users, with a stored reason
+- Activity log recording what changed and who did it
+- View messages sent through the contact form
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tech stack
 
-## Learning Laravel
+- PHP and [Laravel](https://laravel.com)
+- Blade templates
+- Bootstrap 5 and Bootstrap Icons
+- MySQL or SQLite (set in `.env`)
+- Vite for assets
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Getting started
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2 or higher
+- Composer
+- Node.js and npm
+- A database (MySQL, MariaDB or SQLite)
 
-## Laravel Sponsors
+### Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+# 1. Clone the repository
+git clone https://github.com/salvamuhsin/foundit-laravel.git
+cd foundit-laravel
 
-### Premium Partners
+# 2. Install dependencies
+composer install
+npm install
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+# 3. Create your environment file and app key
+cp .env.example .env
+php artisan key:generate
+```
+
+Open `.env` and set your database details 
+(`DB_CONNECTION`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`).
+
+```bash
+# 4. Create tables and load demo data
+php artisan migrate:fresh --seed
+
+# 5. Make uploaded images publicly accessible
+php artisan storage:link
+
+# 6. Build assets and start the app
+npm run build
+php artisan serve
+```
+
+Then open <http://127.0.0.1:8000>. For development with hot reload, run `npm run dev` in a second terminal instead of `npm run build`.
+
+## Demo data
+
+`php artisan migrate:fresh --seed` runs `DatabaseSeeder`, which calls:
+
+- `AdminSeeder` creates the admin account
+- `DemoSeeder` creates 12 members (one restricted), 30 items in every status, claims, meetups, messages, contact messages and activity log entries
+
+Items get placeholder images generated into `storage/app/public/items/`. To use real photos, put 
+`.jpg`, `.png` or `.webp` files in `database/seeders/demo-images/` before seeding and the seeder will use them instead.
+
+> `migrate:fresh` drops all tables. Do not run it against a database that holds real data.
+
+## Project structure
+
+```
+app/
+  Models/        User, Item, Claim, Meetup, Message, ContactMessage, ActivityLog
+  Http/          Controllers, middleware and form requests
+config/
+  foundit.php    Item categories and banner photos
+database/
+  factories/     One factory per model
+  migrations/
+  seeders/       AdminSeeder, DemoSeeder, DatabaseSeeder
+resources/views/ Blade templates and components
+routes/web.php
+```
+
+## How a return works
+
+1. A member posts a **lost** or **found** item with a verification question.
+2. Another member opens the item and submits a claim with their answer and details.
+3. The owner reviews the claim and approves or declines it.
+4. After approval, a meetup is proposed (place, time, note).
+5. Once the item is handed over, the claim is marked **returned**.
+
+## Pagination
+
+The app uses Bootstrap pagination. `Paginator::useBootstrapFive()` is set in `AppServiceProvider::boot()`.
+
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create a branch: `git checkout -b feature/my-change`
+3. Commit your changes and push the branch
+4. Open a pull request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Add a license for your project here (for example MIT) and include a `LICENSE` file.
