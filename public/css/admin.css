@@ -1,0 +1,29 @@
+/* FoundIt admin: top navbar + left sidebar. Load after foundit.css. No charts, only tables and number cards. */
+:root { --admin-nav-h: 58px; --admin-side-w: 260px; }
+.admin-navbar { min-height: var(--admin-nav-h); }
+.admin-shell { min-height: calc(100vh - var(--admin-nav-h)); }
+.admin-main { min-width: 0; }
+
+.admin-sidebar { --bs-offcanvas-bg: var(--fi-card); --bs-offcanvas-color: var(--bs-body-color); --bs-offcanvas-width: 280px; }
+.admin-link { display: flex; align-items: center; gap: .65rem; padding: .6rem .85rem; border-radius: .7rem; color: var(--bs-body-color); text-decoration: none; font-weight: 600; font-size: .93rem; background: transparent; border: 0; width: 100%; text-align: left; }
+.admin-link i { font-size: 1.05rem; width: 1.25rem; text-align: center; }
+.admin-link:hover { background: var(--fi-surface); color: var(--fi-primary); }
+.admin-link.active { background: var(--fi-primary); color: var(--fi-on-primary); }
+.admin-nav-label { font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; color: var(--bs-secondary-color); padding: 1rem .85rem .35rem; font-weight: 700; }
+
+@media (min-width: 992px) {
+  .admin-shell { display: grid; grid-template-columns: var(--admin-side-w) minmax(0, 1fr); }
+  .admin-side-col { background: var(--fi-card); border-right: 1px solid var(--bs-border-color); position: sticky; top: var(--admin-nav-h); height: calc(100vh - var(--admin-nav-h)); overflow-y: auto; }
+}
+@media (max-width: 991.98px) { .admin-side-col { display: contents; } }
+
+.admin-table { --bs-table-bg: transparent; --bs-table-color: var(--bs-body-color); --bs-table-border-color: var(--bs-border-color); --bs-table-hover-bg: var(--fi-surface); --bs-table-hover-color: var(--bs-body-color); margin-bottom: 0; }
+.admin-table th { font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; color: var(--bs-secondary-color); white-space: nowrap; font-weight: 700; padding: .85rem 1rem; }
+.admin-table td { padding: .8rem 1rem; vertical-align: middle; }
+.admin-table .cell-wrap { min-width: 14rem; max-width: 26rem; overflow-wrap: anywhere; }
+.admin-count { display: flex; gap: 1rem; align-items: center; }
+.admin-count .stat-number { font-size: 1.75rem; }
+.status-active { background: #FAEDCB; color: #4F3305; }
+.status-restricted { background: #F9D9D9; color: #7A1C1C; }
+[data-bs-theme="dark"] .status-active { background: #4A3A18; color: #FAEBC6; }
+[data-bs-theme="dark"] .status-restricted { background: #632A2A; color: #FBD9D9; }
