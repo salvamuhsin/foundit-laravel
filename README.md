@@ -106,19 +106,3 @@ routes/web.php
 3. The owner reviews the claim and approves or declines it.
 4. After approval, a meetup is proposed (place, time, note).
 5. Once the item is handed over, the claim is marked **returned**.
-
-## Pagination
-
-The app uses Bootstrap pagination. `Paginator::useBootstrapFive()` is set in `AppServiceProvider::boot()`.
-
-
-## Contributing
-
-1. Fork the repository
-2. Create a branch: `git checkout -b feature/my-change`
-3. Commit your changes and push the branch
-4. Open a pull request
-
-## License
-
-Add a license for your project here (for example MIT) and include a `LICENSE` file.
